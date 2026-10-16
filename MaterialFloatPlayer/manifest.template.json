@@ -4,9 +4,9 @@
   "slug": "MaterialFloatPlayer",
   "author": "Codex",
   "author_links": [],
-  "description": "Material 风格悬浮播放器：圆角方形专辑封面、播放/上一首/下一首/播放模式按钮、滚动歌词，背景色可跟随专辑主要颜色或自定义",
+  "description": "Material 风格悬浮播放器：圆角方形专辑封面、播放/上一首/下一首/播放模式按钮、滚动歌词，背景色跟随专辑主要颜色。界面由独立的 Python 进程渲染（逐像素 alpha 的真圆角 + 真模糊阴影），插件只负责播放状态、歌词与控制",
   "preview": "preview.png",
-  "version": "1.0.6",
+  "version": "2.1.0",
   "type": "extension",
   "betterncm_version": ">=1.0.0",
   "injects": {
@@ -16,12 +16,5 @@
       }
     ]
   },
-  "hijacks": {
-    ">= 2.10.0 < 3.0.0": {
-      "orpheus://orpheus/pub/module/main/music/list/index.html": {
-        "type": "append",
-        "code": "{{WINDOW_CODE}}"
-      }
-    }
-  }
+  "hijacks": {}
 }

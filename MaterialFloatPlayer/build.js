@@ -13,25 +13,14 @@ const root = __dirname;
 const distDir = path.join(root, 'dist');
 
 const template = JSON.parse(fs.readFileSync(path.join(root, 'manifest.template.json'), 'utf8'));
-const windowJs = fs.readFileSync(path.join(root, 'src', 'window.js'), 'utf8');
 const mainJs = fs.readFileSync(path.join(root, 'src', 'main.js'), 'utf8');
 
-if (windowJs.includes('</scr' + 'ipt>')) {
-  throw new Error('window.js 中不能出现 </script> 字面量，否则会破坏注入的 HTML');
-}
-
+// 2.x 起界面不再注入到网易云页面里，改成独立的 Python 进程，所以没有 hijack 代码要拼
 const manifest = JSON.parse(JSON.stringify(template));
-const windowCode = '<scr' + 'ipt>' + windowJs + '</scr' + 'ipt>';
-for (const range of Object.keys(manifest.hijacks)) {
-  for (const url of Object.keys(manifest.hijacks[range])) {
-    manifest.hijacks[range][url].code = windowCode;
-  }
-}
 
 fs.mkdirSync(distDir, { recursive: true });
 fs.writeFileSync(path.join(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
 fs.writeFileSync(path.join(distDir, 'main.js'), mainJs);
-fs.writeFileSync(path.join(distDir, 'window.js'), windowJs);
 
 // ---- 极简 ZIP（仅存储，不做压缩），BetterNCM 使用标准解压可以正常读取
 const CRC_TABLE = (() => {
@@ -113,7 +102,6 @@ function zipFiles(entries) {
 const pluginZip = zipFiles([
   { name: 'manifest.json', data: Buffer.from(JSON.stringify(manifest, null, 2), 'utf8') },
   { name: 'main.js', data: Buffer.from(mainJs, 'utf8') },
-  { name: 'window.js', data: Buffer.from(windowJs, 'utf8') },
   ...(fs.existsSync(path.join(root, 'preview.png'))
     ? [{ name: 'preview.png', data: fs.readFileSync(path.join(root, 'preview.png')) }]
     : []),
@@ -135,7 +123,6 @@ if (args.includes('--dev')) {
   fs.mkdirSync(devDir, { recursive: true });
   fs.writeFileSync(path.join(devDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
   fs.writeFileSync(path.join(devDir, 'main.js'), mainJs);
-  fs.writeFileSync(path.join(devDir, 'window.js'), windowJs);
   console.log('dev copy -> ' + devDir);
 }
 
