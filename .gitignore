@@ -1,0 +1,15 @@
+# 构建产物：dist/ 里的 manifest.json / main.js / window.js / *.plugin 都由 build.js 生成，
+# 需要时跑 `node tools/escape-nonascii.js && node build.js` 重新打包即可。
+dist/
+
+# 依赖与工具目录
+node_modules/
+
+# 编辑器 / 系统杂项
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+*.tmp
